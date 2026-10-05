@@ -94,12 +94,12 @@
         // Export the public key to raw format
         const rawPublicKey = await window.crypto.subtle.exportKey('raw', keyPair.publicKey);
         
-        // Export the private key to PKCS8 format
-        const pkcs8PrivateKey = await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+        // Export the private key as JWK to get the raw P-256 private scalar
+        const jwkPrivateKey = await window.crypto.subtle.exportKey('jwk', keyPair.privateKey);
         
-        // Convert the ArrayBuffers to Base64URL strings
+        // Encode the public point; JWK d is already a Base64URL-encoded private scalar
         const publicKeyBase64 = arrayBufferToBase64URL(rawPublicKey);
-        const privateKeyBase64 = arrayBufferToBase64URL(pkcs8PrivateKey);
+        const privateKeyBase64 = jwkPrivateKey.d;
         
         return {
           publicKey: publicKeyBase64,
